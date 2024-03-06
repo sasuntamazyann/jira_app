@@ -1,0 +1,50 @@
+version: '3'
+
+networks:
+  jira-network:
+    driver: bridge
+
+services:
+  app:
+    container_name: jira-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    volumes:
+      - /app/jira/vendor
+      - ./src:/app/jira
+    networks:
+      - jira-network
+  db:
+    image: mysql
+    container_name: jira-db
+    env_file:
+      - ./src/.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+    networks:
+      - jira-network
+    volumes:
+      - ./db/data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  # Nginx Service
+  nginx:
+    image: nginx:latest
+    container_name: jira-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/app/jira
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - db
+      - app
+    networks:
+      - jira-network
