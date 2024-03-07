@@ -9,7 +9,7 @@ class Issue extends Model
 {
     use HasFactory;
 
-    protected $table = [
+    protected $fillable = [
         'key', 'external_id', 'summary', 'description', 'project_id', 'type_id', 'reporter_external_id'
     ];
 }

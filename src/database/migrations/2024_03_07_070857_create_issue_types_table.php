@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('external_id');
             $table->string('name');
+            $table->unsignedBigInteger('project_id')->index();
             $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
         });
     }
 

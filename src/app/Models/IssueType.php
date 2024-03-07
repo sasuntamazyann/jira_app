@@ -9,5 +9,5 @@ class IssueType extends Model
 {
     use HasFactory;
 
-    protected $table = ['name', 'external_id'];
+    protected $fillable = ['name', 'external_id', 'project_id'];
 }

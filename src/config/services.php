@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'jira' => [
+        'host' => env('JIRAAPI_V3_HOST'),
+        'username' => env('JIRAAPI_V3_USER'),
+        'token' => env('JIRAAPI_V3_PERSONAL_ACCESS_TOKEN'),
+    ]
+
 ];

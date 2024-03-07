@@ -9,5 +9,5 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $table = ['external_id', 'key', 'name'];
+    protected $fillable = ['external_id', 'key', 'name'];
 }

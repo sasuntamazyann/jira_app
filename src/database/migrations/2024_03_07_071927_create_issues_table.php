@@ -16,11 +16,14 @@ return new class extends Migration
             $table->string('key')->nullable();
             $table->string('external_id');
             $table->string('summary');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('type_id');
             $table->string('reporter_external_id');
             $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
+
         });
     }
 
