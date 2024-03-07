@@ -35,6 +35,7 @@ return [
         'host' => env('JIRAAPI_V3_HOST'),
         'username' => env('JIRAAPI_V3_USER'),
         'token' => env('JIRAAPI_V3_PERSONAL_ACCESS_TOKEN'),
+        'reportAccountId' => env('JIRAAPI_V3_REPORTER_ID')
     ]
 
 ];

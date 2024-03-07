@@ -12,4 +12,9 @@ class Issue extends Model
     protected $fillable = [
         'key', 'external_id', 'summary', 'description', 'project_id', 'type_id', 'reporter_external_id'
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(IssueType::class, 'type_id');
+    }
 }

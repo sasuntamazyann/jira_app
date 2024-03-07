@@ -25,4 +25,17 @@ class ProjectService
     {
         return Project::where('external_id', $externalId)->first();
     }
+
+    public function find($id)
+    {
+        return Project::find($id);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function all()
+    {
+        return Project::all();
+    }
 }

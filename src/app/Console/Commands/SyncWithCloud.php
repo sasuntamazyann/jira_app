@@ -4,14 +4,8 @@ namespace App\Console\Commands;
 
 use App\Services\IssueTypeService;
 use App\Services\Jira\JiraApi;
-use App\Services\Jira\JiraService;
 use App\Services\ProjectService;
-use DH\Adf\Node\Block\Document;
 use Illuminate\Console\Command;
-use JiraCloud\ADF\AtlassianDocumentFormat;
-use JiraCloud\Issue\IssueField;
-use JiraCloud\Issue\IssueType;
-use JiraCloud\JiraException;
 use App\Services\IssueService;
 
 class SyncWithCloud extends Command
