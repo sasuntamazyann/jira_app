@@ -21,6 +21,11 @@ docker exec jira-app bash -c 'php artisan key:generate'
 // open http://localhost:8080 in browser
 
 
+// to sync data from cloud run
+
+docker exec jira-app bash -c 'php artisan app:sync-with-cloud'
+
+
 
 ```
 
