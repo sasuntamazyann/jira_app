@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('projects', [ProjectController::class, 'index']);
+Route::get('projects/{projectId}/issue-types', [ProjectController::class, 'getIssueTypes']);
 Route::get('projects/{projectId}/issues', [IssueController::class, 'index']);
 Route::post('projects/{projectId}/issues', [IssueController::class, 'store']);
 Route::patch('projects/{projectId}/issues/{issueId}', [IssueController::class, 'update']);

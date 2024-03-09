@@ -25,4 +25,9 @@ class IssueTypeService
     {
         return IssueType::find($id);
     }
+
+    public function getByProject($projectId)
+    {
+        return IssueType::where('project_id', $projectId)->get();
+    }
 }
