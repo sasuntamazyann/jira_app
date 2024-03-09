@@ -79,47 +79,60 @@ class JiraApi
         return $description;
     }
 
+    /**
+     * @param $projectId
+     * @param array $data
+     * @return mixed
+     */
     public function store($projectId, array $data)
     {
+
+        $req = [
+            'fields' => [
+                'summary' => $data['summary'],
+                'reporter' => [
+                    'id' => config('services.jira.reportAccountId'),
+                ],
+                'issuetype' => [
+                    'id' => (new  IssueTypeService)->find($data['type'])->external_id
+                ],
+                'project' => [
+                    'key' => (new ProjectService())->find($projectId)->key
+                ],
+
+                'description' => [
+                    'content' => [
+                        [
+                            'content' => [
+                                [
+                                    'text' => $data['description'],
+                                    'type' => 'text'
+                                ]
+                            ],
+                            'type' => 'paragraph',
+                        ]
+                    ],
+                    "type" => "doc",
+                    "version" => 1
+                ]
+
+            ]
+        ];
+
+        if (isset($data['parentKey'])) {
+            $req['fields']['parent'] = [
+                'key' => $data['parentKey']
+            ];
+        }
+
         return Http::baseUrl(config('services.jira.host'))
             ->withBasicAuth(config('services.jira.username'), config('services.jira.token'))
             ->withHeaders([
                 'Content-Type' => 'application/json'
             ])
             ->post($this->apis['storeIssue'],
-                [
-                'fields' => [
-                    'summary' => $data['summary'],
-                    'reporter' => [
-                        'id' => config('services.jira.reportAccountId'),
-                    ],
-                    'issuetype' => [
-                        'id' => (new  IssueTypeService)->find($data['type'])->external_id
-                    ],
-                    'project' => [
-                        'key' => (new ProjectService())->find($projectId)->key
-                    ],
-                    'description' => [
-                        'content' => [
-                            [
-                                'content' => [
-                                    [
-                                        'text' => $data['description'],
-                                        'type' => 'text'
-                                    ]
-                                ],
-                                'type' => 'paragraph',
-                            ]
-                        ],
-                        "type" => "doc",
-                        "version" => 1
-                    ]
-
-                ]
-            ]
-            )
-            ->json()
-            ;
+                $req
+            );
     }
 
     public function update($issueId, array $data)

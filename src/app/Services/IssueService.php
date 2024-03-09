@@ -34,7 +34,7 @@ class IssueService
      */
     public function paginate($projectId, $page, $perPage)
     {
-        return Issue::query()->with('type')->where('project_id', $projectId)->paginate(page: $page, perPage: $perPage);
+        return Issue::query()->with('type', 'parent')->where('project_id', $projectId)->orderBy('created_at', 'desc')->paginate(page: $page, perPage: $perPage);
     }
 
     public function delete($id)

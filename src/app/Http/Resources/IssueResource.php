@@ -22,6 +22,7 @@ class IssueResource extends JsonResource
             'project_id' => $this->project_id,
             'type' => new TypeResource($this->type),
             'created_at' => $this->created_at,
+            'parent' => $this->parent ? new IssueResource($this->parent) : null
         ];
     }
 }

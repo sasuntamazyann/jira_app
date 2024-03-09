@@ -9,6 +9,7 @@ use App\Services\IssueService;
 use App\Services\Jira\JiraApi;
 use App\Services\Jira\JiraService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class IssueController extends Controller
 {
@@ -29,6 +30,12 @@ class IssueController extends Controller
         $v = $request->validated();
 
         $i  = $jiraApi->store($projectId, $v);
+        if($i->status() !== Response::HTTP_CREATED) {
+            return response()->json([
+                'error' => 'Something  went wrong',
+                'providerError' => $i->json('errors')
+            ], 400);
+        }
 
         $issue = $service->store([
             'key' => $i['key'],
@@ -37,7 +44,8 @@ class IssueController extends Controller
             'description' => $v['description'],
             'project_id' => $projectId,
             'type_id' => $v['type'],
-            'reporter_external_id' => config('services.jira.reportAccountId')
+            'reporter_external_id' => config('services.jira.reportAccountId'),
+            'parent_id' => $v['parent'] ?? null,
         ]);
 
         return response()->json([
