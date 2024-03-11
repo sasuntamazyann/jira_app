@@ -16,9 +16,19 @@ class IssueService
         return Issue::where('id', $id)->update($data);
     }
 
+    public function updateByExternalId($id, array $data)
+    {
+        return Issue::where('external_id', $id)->update($data);
+    }
+
     public function existsByExternalId($externalId)
     {
         return Issue::where('external_id', $externalId)->exists();
+    }
+
+    public function findByExternalId($externalId)
+    {
+        return Issue::where('external_id', $externalId)->first();
     }
 
     public function find($id)
@@ -40,5 +50,10 @@ class IssueService
     public function delete($id)
     {
         return Issue::where('id', $id)->delete();
+    }
+
+    public function deleteByExternalId($id)
+    {
+        return Issue::where('external_id', $id)->delete();
     }
 }

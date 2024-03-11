@@ -90,7 +90,19 @@ class SyncWithCloud extends Command
 
                 foreach ($issues['issues'] as $issue) {
 
-                    if ($issueService->existsByExternalId($issue['id'])) {
+                    $existingIssue = $issueService->findByExternalId($issue['id']);
+
+                    $desc = $jiraApi->extractDescription($issue['fields']['description'] ?? []);
+
+                    $parentId = $this->getParentId($issue, $localProject);
+
+                    if($existingIssue) {
+                        $issueService->update($existingIssue->id, [
+                            'summary' => $issue['fields']['summary'],
+                            'description' => $desc,
+                            'reporter_external_id' => $issue['fields']['reporter']['accountId'],
+                            'parent_id'=> $parentId,
+                        ]);
                         continue;
                     }
 
@@ -102,7 +114,8 @@ class SyncWithCloud extends Command
                         'description' => $desc,
                         'project_id' => $localProject->id,
                         'type_id' => $typeService->firstByExternalId($localProject->id, $issue['fields']['issuetype']['id'])->id,
-                        'reporter_external_id' => $issue['fields']['reporter']['accountId']
+                        'reporter_external_id' => $issue['fields']['reporter']['accountId'],
+                        'parent_id' => $parentId
                     ]);
                 }
 
@@ -115,5 +128,37 @@ class SyncWithCloud extends Command
 
             }
         }
+    }
+
+    private function getParentId(array $issue, $localProject)
+    {
+
+        /**
+         * @var IssueTypeService $typeService
+         */
+        $typeService = app()->make(IssueTypeService::class);
+        /**
+         * @var IssueService $issueService
+         */
+        $issueService = app()->make(IssueService::class);
+
+        $parentId = null;
+        if (isset($issue['fields']['parent']['id'])) {
+            $parent = $issueService->findByExternalId($issue['fields']['parent']['id']);
+            $parentIssue = $issue['fields']['parent'];
+            $parentId = $parent->id ?? null;
+            if (!$parent) {
+                $parent = $issueService->store([
+                    'key' => $parentIssue['key'],
+                    'external_id' => $parentIssue['id'],
+                    'summary' => $parentIssue['fields']['summary'],
+                    'project_id' => $localProject->id,
+                    'type_id' => $typeService->firstByExternalId($localProject->id, $issue['fields']['issuetype']['id'])->id,
+                ]);
+                $parentId = $parent->id;
+            }
+        }
+
+        return $parentId;
     }
 }

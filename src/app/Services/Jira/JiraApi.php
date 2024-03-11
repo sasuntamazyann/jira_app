@@ -70,8 +70,12 @@ class JiraApi
         $description = '';
         if (isset($desc['content'])) {
             foreach ($desc['content'] as $content) {
-                if (isset($content['type']) && $content['type'] === 'paragraph') {
-                    $description .= $content['content']['text'] ?? '';
+                if(isset($content['content'])){
+                    foreach ($content['content'] as $nestedContent) {
+                        if (isset($nestedContent['text'])) {
+                            $description .= $nestedContent['text'] ?? '';
+                        }
+                    }
                 }
             }
         }

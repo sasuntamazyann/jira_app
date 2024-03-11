@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,6 @@ Route::get('projects/{projectId}/issues', [IssueController::class, 'index']);
 Route::post('projects/{projectId}/issues', [IssueController::class, 'store']);
 Route::patch('projects/{projectId}/issues/{issueId}', [IssueController::class, 'update']);
 Route::delete('projects/{projectId}/issues/{issueId}', [IssueController::class, 'delete']);
+
+Route::any('webhooks', [WebhookController::class, 'handle']);
+
